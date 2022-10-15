@@ -1,6 +1,6 @@
 # qb-garages
 
-
+## status 0 不在車庫、1 車庫內、2 拖吊/扣押
 
 **ATENTION: THIS SCRIPT USES THE LATEST VERSION OF THE [RADIALMENU](https://github.com/qbcore-framework/qb-radialmenu) AND [QB-CORE](https://github.com/qbcore-framework/qb-core)**
 

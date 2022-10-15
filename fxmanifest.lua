@@ -8,7 +8,7 @@ author 'JDev'
 shared_scripts {
     'config.lua',
     '@qb-core/shared/locale.lua',
-    'locales/en.lua',
+    'locales/tc.lua',
 }
 
 client_scripts {
@@ -18,12 +18,13 @@ client_scripts {
     '@PolyZone/CircleZone.lua',
     '@PolyZone/ComboZone.lua',
     'client/main.lua',
-    'client/police.lua'
+    'client/impound.lua',
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'server/main.lua'
+    'server/main.lua',
+    'server/impound.lua',
 }
 
 lua54 'yes'

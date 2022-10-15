@@ -58,88 +58,78 @@
     },
 ]]
 -- NEW
-SpawnVehicleServerside = false -- REQUIRES THE ABSOLUTE LATEST VERSION OF QBCORE, OR MAKE SURE YOU HAVE THESE: https://github.com/qbcore-framework/qb-core/blob/81ffd872319d2eb8e496c3b3faaf37e791912c84/server/events.lua#L252
+SpawnVehicleServerside = true -- REQUIRES THE ABSOLUTE LATEST VERSION OF QBCORE, OR MAKE SURE YOU HAVE THESE: https://github.com/qbcore-framework/qb-core/blob/81ffd872319d2eb8e496c3b3faaf37e791912c84/server/events.lua#L252
 -- NEW 
 
 -- NEW --
 SpawnAtFreeParkingSpot = true
 -- NEW --
 
-StoreDamageAccuratly = false -- Do not use, if on latest qb-core, if set to true, make sure to apply / run patch1.sql
-StoreParkinglotAccuratly = false  -- store the last parking lot in the DB, if set to true, make sure to apply / run patch1.sql, I recommend applying the tracking snippet for qb-phone from the ReadMe to the phone so you can track the vehicle to the exact parking lot
+StoreDamageAccuratly = true -- Do not use, if on latest qb-core, if set to true, make sure to apply / run patch1.sql
+StoreParkinglotAccuratly = true  -- store the last parking lot in the DB, if set to true, make sure to apply / run patch1.sql, I recommend applying the tracking snippet for qb-phone from the ReadMe to the phone so you can track the vehicle to the exact parking lot
 SpawnAtLastParkinglot = false -- spawn the vehicle at hte last parked location if StoreParkinglotAccuratly = true, if set to true, make sure to apply / run patch1.sql, I recommend applying the tracking snippet from the ReadMe to the phone so you can track the vehicle to the exact parking lot
-GarageNameAsBlipName = true -- if set to true, the blips name will match the garage name
-FuelScript = 'LegacyFuel' -- change to lj-fuel / ps-fuel if you use lj-fuel / ps-fuel or something else if you use any other LegcyFuel compatible script
+GarageNameAsBlipName = false -- if set to true, the blips name will match the garage name
+FuelScript = 'cdn-fuel' -- change to lj-fuel / ps-fuel if you use lj-fuel / ps-fuel or something else if you use any other LegcyFuel compatible script
 AllowSpawningFromAnywhere = true -- if set to true, the car can be spawned from anywhere inside the zone on the closest parking lot, if set to false you will have to walk up to a parking lot 
-AutoRespawn = true --True == auto respawn cars that are outside into your garage on script restart, false == does not put them into your garage and players have to go to the impound
+AutoRespawn = false --True == auto respawn cars that are outside into your garage on script restart, false == does not put them into your garage and players have to go to the impound
 WarpPlayerIntoVehicle = false -- True == Will Warp Player Into their vehicle after pulling it out of garage. False It will spawn on the parking lot / in front of them  (Global, can be overriden by each garage)
 HouseParkingDrawText = 'Parking' -- text when driving on to the HOUSE parking lot
 ParkingDistance = 2.0 -- Distance to the parking lot when trying to park the vehicle  (Global, can be overriden by each garage)
 SpawnDistance = 4.5 -- The maximum distance you can be from a parking spot, to spawn a car (Global, can be overriden by each garage)
-DepotPrice = 60.0 -- The price to take out a despawned vehicle from impound.
+DepotPrice = 250.0 -- The price to take out a despawned vehicle from impound.
 DrawTextPosition = 'left' -- location of drawtext: left, top, right
 
 -- set useVehicleSpawner = true for each garage that has type job and should use the vehicle spawner instead of personal vehicles
 JobVehicles = {
-	['pd1'] = { -- jobGarageIdentifier
+	['pdgarage'] = { -- jobGarageIdentifier
         label = "Police Vehicles",
         job = 'police',
         -- Grade 0
         vehicles = {
             [0] = {
-                ["police"] = "Police Car 1",
-                ["police2"] = "Police Car 2",
-                ["police3"] = "Police Car 3",
-                ["police4"] = "Police Car 4",
-                ["policeb"] = "Police Car 5",
-                ["policet"] = "Police Car 6",
-                ["sheriff"] = "Sheriff Car 1",
-                ["sheriff2"] = "Sheriff Car 2",
+                ["npolvic"] = "LSPD CVPI",
+                ["npolexp"] = "LSPD 福特 探險家",
+                ["npolvette"] = "LSPD 科爾維特 C7",
+                ["npolchal"] = "LSPD 道奇 挑戰者",
+                ["npolchar"] = "LSPD 道奇 地獄貓",
+                ["npolstang"] = "LSPD 福特 野馬",
             },
             -- Grade 1
             [1] = {
-                ["police"] = "Police Car 1",
-                ["police2"] = "Police Car 2",
-                ["police3"] = "Police Car 3",
-                ["police4"] = "Police Car 4",
-                ["policeb"] = "Police Car 5",
-                ["policet"] = "Police Car 6",
-                ["sheriff"] = "Sheriff Car 1",
-                ["sheriff2"] = "Sheriff Car 2",
+                ["npolvic"] = "LSPD CVPI",
+                ["npolexp"] = "LSPD 福特 探險家",
+                ["npolvette"] = "LSPD 科爾維特 C7",
+                ["npolchal"] = "LSPD 道奇 挑戰者",
+                ["npolchar"] = "LSPD 道奇 地獄貓",
+                ["npolstang"] = "LSPD 福特 野馬",
 
             },
             -- Grade 2
             [2] = {
-                ["police"] = "Police Car 1",
-                ["police2"] = "Police Car 2",
-                ["police3"] = "Police Car 3",
-                ["police4"] = "Police Car 4",
-                ["policeb"] = "Police Car 5",
-                ["policet"] = "Police Car 6",
-                ["sheriff"] = "Sheriff Car 1",
-                ["sheriff2"] = "Sheriff Car 2",
+                ["npolvic"] = "LSPD CVPI",
+                ["npolexp"] = "LSPD 福特 探險家",
+                ["npolvette"] = "LSPD 科爾維特 C7",
+                ["npolchal"] = "LSPD 道奇 挑戰者",
+                ["npolchar"] = "LSPD 道奇 地獄貓",
+                ["npolstang"] = "LSPD 福特 野馬",
             },
             -- Grade 3
             [3] = {
-                ["police"] = "Police Car 1",
-                ["police2"] = "Police Car 2",
-                ["police3"] = "Police Car 3",
-                ["police4"] = "Police Car 4",
-                ["policeb"] = "Police Car 5",
-                ["policet"] = "Police Car 6",
-                ["sheriff"] = "Sheriff Car 1",
-                ["sheriff2"] = "Sheriff Car 2",
+                ["npolvic"] = "LSPD CVPI",
+                ["npolexp"] = "LSPD 福特 探險家",
+                ["npolvette"] = "LSPD 科爾維特 C7",
+                ["npolchal"] = "LSPD 道奇 挑戰者",
+                ["npolchar"] = "LSPD 道奇 地獄貓",
+                ["npolstang"] = "LSPD 福特 野馬",
             },
             -- Grade 4
             [4] = {
-                ["police"] = "Police Car 1",
-                ["police2"] = "Police Car 2",
-                ["police3"] = "Police Car 3",
-                ["police4"] = "Police Car 4",
-                ["policeb"] = "Police Car 5",
-                ["policet"] = "Police Car 6",
-                ["sheriff"] = "Sheriff Car 1",
-                ["sheriff2"] = "Sheriff Car 2",
+                ["npolvic"] = "LSPD CVPI",
+                ["npolexp"] = "LSPD 福特 探險家",
+                ["npolvette"] = "LSPD 科爾維特 C7",
+                ["npolchal"] = "LSPD 道奇 挑戰者",
+                ["npolchar"] = "LSPD 道奇 地獄貓",
+                ["npolstang"] = "LSPD 福特 野馬",
             }
         }
     }
@@ -178,7 +168,7 @@ VehicleHeading = 'driverside' -- only used when NO parking spots are defined in 
 ]]
 
 SharedJobGarages = { -- define the job garages which are shared
-    --'pdgarage',
+    -- 'pdgarage',
 }
 
 Garages = {
@@ -226,9 +216,10 @@ Garages = {
         blipcoords = vector3(37.08, -616.99, 34.19),
         blipName = 'Public Parking',
         blipNumber = 357,
-        type = 'public',
-        vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        type = 'job',
+        job = "ems",
+        vehicleCategories = {'emergency'},
+        drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
             vector4(48.46, -600.58, 31.05, 339.83),
@@ -291,9 +282,10 @@ Garages = {
         blipcoords = vector3(341.7, -623.33, 29.29),
         blipName = 'Public Parking',
         blipNumber = 357,
-        type = 'public',
-        vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        type = 'job',
+        job = "ems",
+        vehicleCategories = {'emergency'},
+        drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
             vector4(342.07, -632.51, 28.87, 340.17),
@@ -349,7 +341,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
             vector4(1023.5, -756.15, 57.48, 225.44),
@@ -439,7 +431,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
             vector4(874.36, -77.52, 78.34, 326.7),
@@ -619,7 +611,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
             vector4(19.23, -880.71, 29.8, 341.54),
@@ -687,7 +679,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                -- public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},                --car, air, sea
-        drawText = 'Parking',
+        drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
             vector4(277.62, -340.01, 44.5, 70.08),
@@ -747,7 +739,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         debug = false,                 --car, air, sea
         ['ParkingSpots'] = {
             vector4(-356.89, -749.29, 33.54, 270.15),
@@ -827,7 +819,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false,
         ['ParkingSpots'] = {
             vector4(-1144.92, -745.32, 19.69, 105.6),
@@ -866,7 +858,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false,
         ['ParkingSpots'] = {
             vector4(54.49, 19.49, 69.14, 339.68),
@@ -895,7 +887,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false,
         ['ParkingSpots'] = {
             vector4(-477.62, -816.44, 30.05, 271.2),
@@ -954,7 +946,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false,
         ['ParkingSpots'] = {
             vector4(359.53, 270.99, 102.65, 341.37),
@@ -1055,7 +1047,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         debug = false
     },
     ['beachp'] = {
@@ -1088,7 +1080,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false
     },
     ["themotorhotel"] = {
@@ -1113,7 +1105,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false
     },
     ['liqourparking'] = {
@@ -1134,7 +1126,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false
     },
     ['haanparking'] = {
@@ -1179,7 +1171,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false
     },
     ['legionsquare'] = {
@@ -1202,7 +1194,7 @@ Garages = {
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',                 --car, air, sea
+        drawText = '車庫',                 --car, air, sea
         debug = false,
         ['ParkingSpots'] = {
             vector4(219.38, -765.95, 30.41, 247.04),
@@ -1343,8 +1335,8 @@ Garages = {
         blipNumber = 357,
         type = 'job',                --public, job, gang, depot
         vehicleCategories = {'emergency'},
-        drawText = 'Parking',              --car, air, sea
-        job = "police",
+        drawText = '車庫',              --car, air, sea
+        job = "leo",
         debug = false,
         ['ParkingSpots'] = {
             vector4(449.57, -1024.85, 28.06, 5.95),
@@ -1372,8 +1364,8 @@ Garages = {
         blipNumber = 357,
         type = 'job',                --public, job, gang, depot
         vehicleCategories = {'emergency'},
-        drawText = 'Parking',              --car, air, sea
-        job = "police",
+        drawText = '車庫',              --car, air, sea
+        job = "leo",
         debug = false,
         ['ParkingSpots'] = {
             vector4(581.11, 38.73, 92.21, 265.09),
@@ -1404,7 +1396,7 @@ Garages = {
         label = 'LS Customs',
         type = 'job',
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         job = 'mechanic',
         debug = false
     },
@@ -1429,7 +1421,7 @@ Garages = {
         label = 'Alta Apartments',
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         ["ParkingSpots"] = {
             vector4(-297.71, -990.11, 30.76, 338.79),
             vector4(-301.09, -988.82, 30.76, 339.11),
@@ -1560,7 +1552,7 @@ Garages = {
         label = 'City Hall Parking',
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
-        drawText = 'Parking',
+        drawText = '車庫',
         ["ParkingSpots"] = {
             vector4(-475.26, -219.26, 36.05, 30.12),
             vector4(-478.26, -214.06, 36.21, 30.11),
@@ -1574,32 +1566,32 @@ Garages = {
         },
         debug = false
     },
-    ['pdfront'] = {
-        ['Zone'] = {
-            ['Shape'] = { --polygon that surrounds the parking area
-            vector2(405.13595581054, -998.57788085938),
-            vector2(410.59521484375, -1002.8664550782),
-            vector2(410.91711425782, -979.44134521484),
-            vector2(405.4065246582, -974.57928466796),
-            },
-            ['minZ'] = 28.0,  -- min height of the parking zone
-            ['maxZ'] = 31.0,  -- max height of the parking zone
+    -- ['pdfront'] = {
+    --     ['Zone'] = {
+    --         ['Shape'] = { --polygon that surrounds the parking area
+    --         vector2(405.13595581054, -998.57788085938),
+    --         vector2(410.59521484375, -1002.8664550782),
+    --         vector2(410.91711425782, -979.44134521484),
+    --         vector2(405.4065246582, -974.57928466796),
+    --         },
+    --         ['minZ'] = 28.0,  -- min height of the parking zone
+    --         ['maxZ'] = 31.0,  -- max height of the parking zone
 
-        },
-        label = 'Front of MRPD',
-        type = 'job',
-        job = "police",
-        vehicleCategories = {'emergency'},
-        drawText = 'Parking',
-        ["ParkingSpots"] = {
-            vector4(407.44, -997.7, 28.94, 52.87),
-            vector4(407.55, -992.85, 28.94, 51.63),
-            vector4(407.7, -988.49, 28.94, 52.48),
-            vector4(407.42, -983.95, 28.94, 51.54),
-            vector4(407.68, -979.62, 28.94, 51.69),
-        },
-        debug = false
-    },
+    --     },
+    --     label = 'Front of MRPD',
+    --     type = 'job',
+    --     job = "leo",
+    --     vehicleCategories = {'emergency'},
+    --     drawText = '車庫',
+    --     ["ParkingSpots"] = {
+    --         vector4(407.44, -997.7, 28.94, 52.87),
+    --         vector4(407.55, -992.85, 28.94, 51.63),
+    --         vector4(407.7, -988.49, 28.94, 52.48),
+    --         vector4(407.42, -983.95, 28.94, 51.54),
+    --         vector4(407.68, -979.62, 28.94, 51.69),
+    --     },
+    --     debug = false
+    -- },
     ['pdgarage'] = {
         ['Zone'] = {
             ['Shape'] = { --polygon that surrounds the parking area
@@ -1615,10 +1607,9 @@ Garages = {
         },
         label = 'MRPD Garage',
         type = 'job',
-        job = "police",
-        --useVehicleSpawner = true,
+        job = "leo",
         vehicleCategories = {'emergency'},
-        drawText = 'Parking',
+        drawText = '車庫',
         ["ParkingSpots"] = {
             vector4(445.67, -997.0, 24.81, 269.98),
             vector4(445.83, -994.31, 25.21, 267.42),

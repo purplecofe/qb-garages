@@ -103,7 +103,7 @@ local function PublicGarage(garageName, type)
             header = Lang:t("menu.leave.car"),
             txt = "",
             params = {
-                event = 'qb-menu:closeMenu'
+                event = 'qb-garages:client:OpenMenu'
             }
         },
     })
@@ -231,7 +231,7 @@ local function IsAuthorizedToAccessGarage(garageName)
     if not garage then return false end
     if garage.type == 'job' then
         if type(garage.job) == "string" and not IsStringNilOrEmpty(garage.job) then
-            return PlayerJob.name == garage.job 
+            return PlayerJob.type == garage.job 
         elseif type(garage.job) =="table" then
             return TableContains(garage.job, PlayerJob.name)
         end
@@ -275,7 +275,7 @@ local function CanParkVehicle(veh, garageName, vehLocation)
     end
 end
 
-local function ParkOwnedVehicle(veh, garageName, vehLocation, plate)
+local function ParkOwnedVehicle(veh, garageName, vehLocation, plate, garageType, owned)
     local bodyDamage = math.ceil(GetVehicleBodyHealth(veh))
     local engineDamage = math.ceil(GetVehicleEngineHealth(veh))
 
@@ -291,25 +291,13 @@ local function ParkOwnedVehicle(veh, garageName, vehLocation, plate)
     local closestVec3 = closestLocation and vector3(closestLocation.x,closestLocation.y, closestLocation.z) or nil
     if not canPark and not garageName.useVehicleSpawner then return end
     local properties = QBCore.Functions.GetVehicleProperties(veh)
-    TriggerServerEvent('qb-garage:server:updateVehicle', 1, totalFuel, engineDamage, bodyDamage, plate, properties, garageName, StoreParkinglotAccuratly and closestVec3 or nil, StoreDamageAccuratly and GetCarDamage(veh) or nil)
+    TriggerServerEvent('qb-garage:server:updateVehicle', 1, totalFuel, engineDamage, bodyDamage, plate, properties, garageName, StoreParkinglotAccuratly and closestVec3 or nil, StoreDamageAccuratly and GetCarDamage(veh) or nil, garageType, owned)
     ExitAndDeleteVehicle(veh)
     if plate then
         OutsideVehicles[plate] = nil
         TriggerServerEvent('qb-garages:server:UpdateOutsideVehicles', OutsideVehicles)
     end
     QBCore.Functions.Notify(Lang:t("success.vehicle_parked"), "success", 4500)
-end
-
-function ParkVehicleSpawnerVehicle(veh, garageName, vehLocation, plate)
-    QBCore.Functions.TriggerCallback("qb-garage:server:CheckSpawnedVehicle", function (result)
-        local canPark, _ = CanParkVehicle(veh, garageName, vehLocation)
-        if result and canPark then
-            TriggerServerEvent("qb-garage:server:UpdateSpawnedVehicle", plate, nil)
-            ExitAndDeleteVehicle(veh)
-        elseif not result then
-            QBCore.Functions.Notify(Lang:t("error.not_owned"), "error", 3500)
-        end
-    end, plate)
 end
 
 local function ParkVehicle(veh, garageName, vehLocation)
@@ -320,9 +308,9 @@ local function ParkVehicle(veh, garageName, vehLocation)
     local gang = PlayerGang.name
     QBCore.Functions.TriggerCallback('qb-garage:server:checkOwnership', function(owned)
         if owned then
-           ParkOwnedVehicle(veh, garageName, vehLocation, plate)
-        elseif garage and garage.useVehicleSpawner and IsAuthorizedToAccessGarage(garageName) then
-           ParkVehicleSpawnerVehicle(veh, vehLocation, vehLocation, plate)
+           ParkOwnedVehicle(veh, garageName, vehLocation, plate, type, true)
+        elseif not owned and IsAuthorizedToAccessGarage(garageName) then
+            ParkOwnedVehicle(veh, garageName, vehLocation, plate, type, false)
         else
             QBCore.Functions.Notify(Lang:t("error.not_owned"), "error", 3500)
         end
@@ -334,7 +322,7 @@ local function AddRadialParkingOption()
     if IsPedInAnyVehicle(Player) then
         MenuItemId = exports['qb-radialmenu']:AddOption({
             id = 'put_up_vehicle',
-            title = 'Park Vehicle',
+            title = '停車',
             icon = 'square-parking',
             type = 'client',
             event = 'qb-garages:client:ParkVehicle',
@@ -343,7 +331,7 @@ local function AddRadialParkingOption()
     else
         MenuItemId = exports['qb-radialmenu']:AddOption({
             id = 'open_garage_menu',
-            title = 'Open Garage',
+            title = '車庫',
             icon = 'warehouse',
             type = 'client',
             event = 'qb-garages:client:OpenMenu',
@@ -355,7 +343,7 @@ end
 local function AddRadialImpoundOption()
     MenuItemId = exports['qb-radialmenu']:AddOption({
         id = 'open_garage_menu',
-        title = 'Open Impound Lot',
+        title = '拖吊場',
         icon = 'warehouse',
         type = 'client',
         event = 'qb-garages:client:OpenMenu',
@@ -367,7 +355,7 @@ local function UpdateRadialMenu()
     local garage = Garages[CurrentGarage]
     if CurrentGarage ~= nil and garage ~= nil then
         if garage.type == 'job' and not IsStringNilOrEmpty(garage.job) then
-            if PlayerJob.name == garage.job then
+            if PlayerJob.type == garage.job then
                 AddRadialParkingOption()
             end
         elseif garage.type == 'gang' and not IsStringNilOrEmpty(garage.gang) then
@@ -453,50 +441,39 @@ local function RegisterHousePoly(house)
     end)
 end
 
-function JobMenuGarage(garageName)
-    local job = QBCore.Functions.GetPlayerData().job.name
-    local garage = Garages[garageName]
-    local jobGarage = JobVehicles[garage.jobGarageIdentifier]
+function JobMenuGarage(CurrentGarage, type)
+    local garage = Garages[CurrentGarage]
+    local categories = garage.vehicleCategories
+    local superCategory = GetSuperCategoryFromCategories(categories)
 
-    if not jobGarage then
-        if garage.jobGarageIdentifier then
-            TriggerEvent('QBCore:Notify', string.format('Job garage with id %s not configured.', garage.jobGarageIdentifier), 'error', 5000)
-        else
-            TriggerEvent('QBCore:Notify', string.format("'jobGarageIdentifier' not defined on job garage %s ", garageName), 'error', 5000)
-        end
-        return
-    end
-    local vehicleMenu = {
+    local menu = {
         {
-            header = jobGarage.label,
-            isMenuHeader = true
-        }
-    }
-
-    local vehicles = jobGarage.vehicles[QBCore.Functions.GetPlayerData().job.grade.level]
-    for veh, label in pairs(vehicles) do
-        vehicleMenu[#vehicleMenu+1] = {
-            header = label,
-            txt = "",
+            header = Lang:t('menu.header.personal'),
+            txt = Lang:t('menu.text.personal'),
             params = {
-                event = "qb-garages:client:TakeOutGarage",
+                event = 'qb-garages:client:GarageMenu',
                 args = {
-                    vehicleModel = veh,
-                    garage = garage
+                    garageId = CurrentGarage,
+                    garage = garage,
+                    categories = categories,
+                    header =  Lang:t("menu.header."..garage.type.."_"..superCategory, {value = garage.label}),
+                    superCategory = superCategory,
+                    type = type
                 }
             }
-        }
-    end
-
-    vehicleMenu[#vehicleMenu+1] = {
-        header = Lang:t('menu.leave.job'),
-        txt = "",
-        params = {
-            event = "qb-menu:client:closeMenu"
-        }
-
+        },
+        {
+            header = Lang:t('menu.header.shared'),
+            txt = Lang:t('menu.text.shared'),
+            params = {
+                event = 'qb-garages:client:JobMenuGarage',
+                args = {
+                    garageId = CurrentGarage,
+                }
+            }
+        },
     }
-    exports['qb-menu']:openMenu(vehicleMenu)
+    exports['qb-menu']:openMenu(menu)
 end
 
 function GetFreeParkingSpots(parkingSpots)
@@ -615,37 +592,23 @@ local function SpawnVehicleSpawnerVehicle(vehicleModel, location, heading, cb)
     end
 end
 
-function UpdateSpawnedVehicle(spawnedVehicle, vehicleInfo, heading, garage, properties)
+function UpdateSpawnedVehicle(spawnedVehicle, vehicleInfo, heading, garage, properties, owned)
     QBCore.Functions.SetVehicleProperties(spawnedVehicle, properties)
     local plate = QBCore.Functions.GetPlate(spawnedVehicle)
-    if garage.useVehicleSpawner then
-        if plate then
-            OutsideVehicles[plate] = spawnedVehicle
-            TriggerServerEvent('qb-garages:server:UpdateOutsideVehicles', OutsideVehicles)
-        end
-        if FuelScript then
-            exports[FuelScript]:SetFuel(spawnedVehicle, 100)
-        else
-            exports['LegacyFuel']:SetFuel(spawnedVehicle, 100) -- Don't change this. Change it in the  Defaults to legacy fuel if not set in the config
-        end
-        TriggerEvent("vehiclekeys:client:SetOwner", plate)
-        TriggerServerEvent("qb-garage:server:UpdateSpawnedVehicle", plate, true)
-    else
-        if plate then
-            OutsideVehicles[plate] = spawnedVehicle
-            TriggerServerEvent('qb-garages:server:UpdateOutsideVehicles', OutsideVehicles)
-        end
-        if FuelScript then
-            exports[FuelScript]:SetFuel(spawnedVehicle, vehicleInfo.fuel)
-        else
-            exports['LegacyFuel']:SetFuel(spawnedVehicle, vehicleInfo.fuel) -- Don't change this. Change it in the  Defaults to legacy fuel if not set in the config
-        end
-        SetVehicleNumberPlateText(spawnedVehicle, vehicleInfo.plate)
-        SetAsMissionEntity(spawnedVehicle)
-        ApplyVehicleDamage(spawnedVehicle, vehicleInfo)
-        TriggerServerEvent('qb-garage:server:updateVehicleState', 0, vehicleInfo.plate, vehicleInfo.garage)
-        TriggerEvent("vehiclekeys:client:SetOwner", vehicleInfo.plate)
+    if plate then
+        OutsideVehicles[plate] = spawnedVehicle
+        TriggerServerEvent('qb-garages:server:UpdateOutsideVehicles', OutsideVehicles)
     end
+    if FuelScript then
+        exports[FuelScript]:SetFuel(spawnedVehicle, vehicleInfo.fuel)
+    else
+        exports['LegacyFuel']:SetFuel(spawnedVehicle, vehicleInfo.fuel) -- Don't change this. Change it in the  Defaults to legacy fuel if not set in the config
+    end
+    SetVehicleNumberPlateText(spawnedVehicle, vehicleInfo.plate)
+    SetAsMissionEntity(spawnedVehicle)
+    ApplyVehicleDamage(spawnedVehicle, vehicleInfo)
+    TriggerServerEvent('qb-garage:server:updateVehicleState', 0, vehicleInfo.plate, vehicleInfo.garage, garage.type, owned)
+    TriggerEvent("vehiclekeys:client:SetOwner", vehicleInfo.plate)
     SetEntityHeading(spawnedVehicle, heading)
     SetAsMissionEntity(spawnedVehicle)
     SetVehicleEngineOn(spawnedVehicle, true, true)
@@ -697,6 +660,7 @@ RegisterNetEvent("qb-garages:client:GarageMenu", function(data)
                     MenuGarageOptions[#MenuGarageOptions+1] = {
                         header = Lang:t('menu.header.depot', {value = vname, value2 = v.depotprice }),
                         txt = Lang:t('menu.text.depot', {value = v.plate, value2 = currentFuel, value3 = enginePercent, value4 = bodyPercent}),
+                        disabled = not v.canTakeout,
                         params = {
                             event = "qb-garages:client:TakeOutDepot",
                             args = {
@@ -719,6 +683,7 @@ RegisterNetEvent("qb-garages:client:GarageMenu", function(data)
                                 type = type,
                                 garage = garage,
                                 superCategory = superCategory,
+                                owned = true,
                             }
                         }
                     }
@@ -746,32 +711,127 @@ RegisterNetEvent('qb-garages:client:TakeOutGarage', function(data, cb)
     local parkingSpots = garage.ParkingSpots or {}
 
     local location, heading = GetSpawnLocationAndHeading(garage, garageType, parkingSpots, vehicle, spawnDistance)
-    if garage.useVehicleSpawner then
-        SpawnVehicleSpawnerVehicle(vehicleModel, location, heading, cb)
-    else
-        if SpawnVehicleServerside then
-            QBCore.Functions.TriggerCallback('qb-garage:server:spawnvehicle', function(netId, properties)
-                local veh = NetToVeh(netId)
-                if not veh or not netId then
-                    print("ISSUE HERE: ", netId)
-                    print(veh)
-                    QBCore.Debug(properties)
-                end
-                UpdateSpawnedVehicle(veh, vehicle, heading, garage, properties)
-                if cb then cb(veh) end
-            end, vehicle, location, garage.WarpPlayerIntoVehicle ~= nil and garage.WarpPlayerIntoVehicle or WarpPlayerIntoVehicle)
-        else
-            QBCore.Functions.SpawnVehicle(vehicleModel, function(veh)
-                QBCore.Functions.TriggerCallback('qb-garage:server:GetVehicleProperties', function(properties)
-                    UpdateSpawnedVehicle(veh, vehicle, heading, garage, properties)
-                    if cb then cb(veh) end
-                end, vehicle.plate)
-            end, location, true)
+    QBCore.Functions.TriggerCallback('qb-garage:server:spawnvehicle', function(netId, properties)
+        local veh = NetToVeh(netId)
+        if not veh or not netId then
+            print("ISSUE HERE: ", netId)
+            print(veh)
+            QBCore.Debug(properties)
         end
-    end
+        UpdateSpawnedVehicle(veh, vehicle, heading, garage, properties, data.owned or false)
+        if cb then cb(veh) end
+    end, vehicle, location, garage.WarpPlayerIntoVehicle ~= nil and garage.WarpPlayerIntoVehicle or WarpPlayerIntoVehicle, garageType)
 end)
 
+RegisterNetEvent('qb-garages:client:JobMenuGarage', function(data)
+    local job = QBCore.Functions.GetPlayerData().job.name
+    local garage = Garages[data.garageId]
+    local categories = garage.vehicleCategories
+    local superCategory = GetSuperCategoryFromCategories(categories)
 
+    local vehicleMenu = {}
+    vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.leave.job'), icon = "fas fa-chevron-left", txt = "", params = { event = "qb-garages:client:OpenMenu" }}
+    -- 取得車輛種類列表
+    QBCore.Functions.TriggerCallback('qb-garages:server:GetJobGarageVehicleCategories', function(result)
+        if result then
+            for k, v in pairs(result) do
+                vehicleMenu[#vehicleMenu+1] = {
+                    header = QBCore.Shared.Vehicles[v.vehicle].name,
+                    txt = v.numberOfVehicles.." 台",
+                    params = {
+                        event = "qb-garages:client:JobMenuVehicles",
+                        args = {
+                            vehicleModel = v.vehicle,
+                            garage = garage,
+                            garageId = data.garageId
+                        }
+                    }
+                }
+            end
+        else
+            vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.empty'), txt = "", params = { event = "" }}
+        end
+        exports['qb-menu']:openMenu(vehicleMenu)
+    end, data.garageId, superCategory)
+end)
+-- 車輛列表
+RegisterNetEvent('qb-garages:client:JobMenuVehicles', function(data)
+    local vehicleMenu = {}
+    vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.leave.close'), icon = "fas fa-times", txt = "", params = { event = "" }}
+
+    QBCore.Functions.TriggerCallback('qb-garages:server:GetJobGarageVehicles', function(result)
+        if result then
+            for _, vehicle in pairs(result) do
+                local state = Lang:t("status.out")
+                if vehicle.state == 1 then
+                    state = Lang:t("status.garaged")
+                elseif vehicle.state == 0 then
+                    state = Lang:t("status.out")
+                elseif vehicle.state == 2 then
+                    state = Lang:t("status.impound")
+                end
+                vehicleMenu[#vehicleMenu+1] = {
+                    header = vehicle.vehiclename,
+                    txt = Lang:t('menu.text.vehicle', {plate = vehicle.plate, state = state}),
+                    params = {
+                        event = "qb-garages:client:JobMenuVehicle",
+                        args = {
+                            vehicle = vehicle,
+                            garage = data.garage
+                        }
+                    }
+                }
+            end
+        else
+            vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.empty'), txt = "", params = { event = "" }}
+        end
+        exports['qb-menu']:openMenu(vehicleMenu)
+    end, data.vehicleModel, data.garageId)
+end)
+-- 選中的車輛列表
+RegisterNetEvent('qb-garages:client:JobMenuVehicle', function(data)
+    local vehicleMenu = {}
+    vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.leave.close'), icon = "fas fa-times", txt = "", params = { event = "" }}
+    QBCore.Functions.TriggerCallback("qb-garages:server:GetJobGarageVehicle",function(result)
+        if not result then return end
+        for _, vehicle in pairs(result) do
+            local state = Lang:t("status.out")
+            if vehicle.state == 1 then
+                state = Lang:t("status.garaged")
+            elseif vehicle.state == 0 then
+                state = Lang:t("status.out")
+            elseif vehicle.state == 2 then
+                state = Lang:t("status.impound")
+            end
+            local modifications = json.decode(vehicle.mods)
+            bodyPercent = QBCore.Shared.Round(modifications.bodyHealth / 10, 0)
+            enginePercent = QBCore.Shared.Round(modifications.engineHealth / 10, 0)
+            vehicleMenu[#vehicleMenu+1] = {
+                header = Lang:t('menu.header.takeout'), 
+                txt = "", 
+                disabled = vehicle.state ~= 1, 
+                params = { 
+                    event = "qb-garages:client:TakeOutGarage", 
+                    args = {
+                        type = data.garage.type,
+                        vehicleModel = vehicle.vehicle,
+                        vehicle = vehicle,
+                        garage = data.garage,
+                    }
+                }
+            }
+            vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.status_car'), txt = Lang:t('menu.text.status_car', {state = state, engine = enginePercent, body = bodyPercent}), params = { event = "" }}
+            vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.retrieve_car'), txt = "", disabled = vehicle.state ~= 2, params = { event = "qb-garages:client:RetrieveVehicle", args = {plate = vehicle.plate} }}
+        end
+        exports['qb-menu']:openMenu(vehicleMenu)
+    end, data.vehicle.plate)
+end)
+
+RegisterNetEvent('qb-garages:client:RetrieveVehicle', function(data)
+    QBCore.Functions.TriggerCallback('qb-garages:server:RetrieveVehicle', function(_)
+        QBCore.Functions.Notify(data.plate..' 已回到車庫', 'success', 3500)
+    end, data.plate)
+end)
 
 RegisterNetEvent('qb-radialmenu:client:onRadialmenuOpen', function()
     UpdateRadialMenu()
@@ -781,8 +841,8 @@ RegisterNetEvent('qb-garages:client:OpenMenu', function()
     if CurrentGarage then
         local garage = Garages[CurrentGarage]
         local type = garage.type
-        if type == 'job' and garage.useVehicleSpawner then
-            JobMenuGarage(CurrentGarage)
+        if type == 'job' then
+            JobMenuGarage(CurrentGarage, type)
         else
             PublicGarage(CurrentGarage, type)
         end
@@ -795,17 +855,6 @@ RegisterNetEvent('qb-garages:client:ParkVehicle', function()
     local ped = PlayerPedId()
     local curVeh = GetVehiclePedIsIn(ped)
     ParkVehicle(curVeh)
-end)
-
-RegisterNetEvent('qb-garages:client:ParkLastVehicle', function(parkingName)
-    local ped = PlayerPedId()
-    local curVeh = GetLastDrivenVehicle(ped)
-    if curVeh then
-        local coords = GetEntityCoords(curVeh)
-        ParkVehicle(curVeh, parkingName or CurrentGarage, coords)
-    else
-        QBCore.Functions.Notify(Lang:t('error.no_vehicle'), "error", 4500)
-    end
 end)
 
 RegisterNetEvent('qb-garages:client:TakeOutDepot', function(data)
