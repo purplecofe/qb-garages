@@ -382,14 +382,14 @@ local function CreateGarageZone()
     combo:onPlayerInOut(function(isPointInside, l, zone)
         if isPointInside and IsAuthorizedToAccessGarage(zone.name) then
             CurrentGarage = zone.name
-            exports['qb-core']:DrawText(Garages[CurrentGarage]['drawText'], DrawTextPosition)
+            exports['ps-ui']:DisplayText(Garages[CurrentGarage]['drawText'])
         else
             CurrentGarage = nil
             if MenuItemId ~= nil then
                 exports['qb-radialmenu']:RemoveOption(MenuItemId)
                 MenuItemId = nil
             end
-            exports['qb-core']:HideText()
+            exports['ps-ui']:HideText()
         end
     end)
 end
@@ -429,9 +429,9 @@ local function RegisterHousePoly(house)
     zone:onPlayerInOut(function(isPointInside)
         if isPointInside then
             CurrentHouseGarage = house
-            exports['qb-core']:DrawText(HouseParkingDrawText, DrawTextPosition)
+            exports['ps-ui']:DisplayText(HouseParkingDrawText)
         else
-            exports['qb-core']:HideText()
+            exports['ps-ui']:HideText()
             if MenuItemId ~= nil then
                 exports['qb-radialmenu']:RemoveOption(MenuItemId)
                 MenuItemId = nil

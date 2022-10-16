@@ -185,7 +185,7 @@ Garages = {
         - plane
         - other
     ]]
-    ['pillboxgarage'] = {
+    ['lowerpower'] = {
         ['Zone'] = {
             ['Shape'] = {
                 vector2(75.48, -576.16),
@@ -214,11 +214,10 @@ Garages = {
         label = 'Lower Power St Parking',
         showBlip = true,
         blipcoords = vector3(37.08, -616.99, 34.19),
-        blipName = 'Public Parking',
+        blipName = '公共車庫',
         blipNumber = 357,
-        type = 'job',
-        job = "ems",
-        vehicleCategories = {'emergency'},
+        type = 'public',
+        vehicleCategories = {'car', 'motorcycle', 'other'},
         drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
@@ -280,11 +279,10 @@ Garages = {
         label = 'Pillbox Lower Parking',
         showBlip = true,
         blipcoords = vector3(341.7, -623.33, 29.29),
-        blipName = 'Public Parking',
+        blipName = '公共車庫',
         blipNumber = 357,
-        type = 'job',
-        job = "ems",
-        vehicleCategories = {'emergency'},
+        type = 'public',
+        vehicleCategories = {'car', 'motorcycle', 'other'},
         drawText = '車庫',
         debug = false,
         ['ParkingSpots'] = {
@@ -300,6 +298,67 @@ Garages = {
             vector4(333.34, -616.15, 28.87, 160.22),
             vector4(269.97, -322.62, 44.5, 248.07),
         }
+    },
+    ['pillboxgarage'] = {
+        ['Zone'] = {
+            ['Shape'] = {
+                vector2(336.07772827148, -589.24542236328),
+                vector2(333.81625366211, -594.20208740234),
+                vector2(316.72201538086, -587.79028320312),
+                vector2(318.65740966797, -582.54534912109),
+                vector2(311.64395141602, -579.85192871094),
+                vector2(317.55065917969, -561.98724365234),
+                vector2(322.11553955078, -560.20355224609),
+                vector2(339.20220947266, -566.06323242188),
+                vector2(332.67639160156, -583.61639404297),
+                vector2(337.22933959961, -585.36761474609)
+                          },
+            ['minZ'] = 27.796838760376,  -- min height of the parking zone
+            ['maxZ'] = 29.0,  -- max height of the parking zone
+        },
+        label = 'Pillbox Parking',
+        type = 'job',
+        job = "ems",
+        vehicleCategories = {'emergency'},
+        drawText = '車庫',
+        debug = false,
+        ['ParkingSpots'] = {
+            vector4(333.04, -591.02, 28.8, 338.52),
+            vector4(329.6, -589.69, 28.8, 338.95),
+            vector4(326.49, -588.5, 28.8, 340.85),
+            vector4(323.01, -587.16, 28.8, 338.51),
+            vector4(319.7, -586.12, 28.8, 343.54),
+            vector4(316.57, -578.08, 28.8, 248.75),
+            vector4(318.26, -574.11, 28.8, 246.12),
+            vector4(319.71, -569.81, 28.8, 247.93),
+            vector4(321.17, -565.66, 28.8, 247.93),
+        }
+    },
+    ['pillboxhelicopter'] = {
+        ['Zone'] = {
+            ['Shape'] = { --polygon that surrounds the parking area
+            vector2(348.10540771484, -581.25738525391),
+            vector2(353.34066772461, -580.39801025391),
+            vector2(358.59948730469, -584.01129150391),
+            vector2(359.48037719727, -590.50915527344),
+            vector2(355.81762695312, -595.09014892578),
+            vector2(349.2712097168, -595.76654052734),
+            vector2(344.79080200195, -592.15112304688),
+            vector2(343.94512939453, -585.61187744141)
+            },
+            ['minZ'] = 73.161811828613,  -- min height of the parking zone
+            ['maxZ'] = 75.161811828613,  -- max height of the parking zone
+        },
+        label = 'PillBox Helicopter',
+        drawText = '直昇機機庫',
+        type = 'job',
+        job = 'ems',
+        vehicleCategories = {'helicopter'},
+        ["ParkingSpots"] = {
+            vector4(352.22, -588.36, 74.16, 65.1)
+        },
+        ParkingDistance = 10.0,
+        debug = false
     },
     ['mirrorpark'] = {
         ['Zone'] = {
@@ -337,7 +396,7 @@ Garages = {
         label = 'Mirror Park Parking',
         showBlip = true,
         blipcoords = vector3(1037.65, -771.62, 58.01),
-        blipName = 'Public Parking',
+        blipName = '公共車庫',
         blipNumber = 357,
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -427,7 +486,7 @@ Garages = {
         label = 'Casino Parking',
         showBlip = true,
         blipcoords = vector3(888.47, -37.44, 78.76),
-        blipName = 'Public Parking',
+        blipName = '公共車庫',
         blipNumber = 357,
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -607,7 +666,7 @@ Garages = {
         label = 'Legion Square Parking',
         showBlip = true,
         blipcoords = vector3(52.41, -874.53, 30.42),
-        blipName = 'Public Parking',
+        blipName = '公共車庫',
         blipNumber = 357,
         type = 'public',
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -675,7 +734,7 @@ Garages = {
         label = "Motel Parking",
         showBlip = true,
         blipcoords = vector3(273.43, -343.99, 44.91),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                -- public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},                --car, air, sea
@@ -735,7 +794,7 @@ Garages = {
         label = "San Andreas Parking",
         showBlip = true,
         blipcoords = vector3(-330.01, -780.33, 33.96),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -815,7 +874,7 @@ Garages = {
         label = "North Rockford Parking",
         showBlip = true,
         blipcoords = vector3(-1160.86, -741.41, 19.63),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -854,7 +913,7 @@ Garages = {
         label = "Spanish Ave Parking",
         showBlip = true,
         blipcoords = vector3(69.84, 12.6, 68.96),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -883,7 +942,7 @@ Garages = {
         label = "Caesar 24h Parking",
         showBlip = true,
         blipcoords = vector3(-475.31, -818.73, 30.46),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -942,7 +1001,7 @@ Garages = {
         label = "Laguna Parking",
         showBlip = true,
         blipcoords = vector3(364.37, 297.83, 103.49),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -1043,7 +1102,7 @@ Garages = {
         label = "Airport Parking",
         showBlip = true,
         blipcoords = vector3(-796.86, -2024.85, 8.88),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -1076,7 +1135,7 @@ Garages = {
         label = "Beach Parking",
         showBlip = true,
         blipcoords = vector3(-1183.1, -1511.11, 4.36),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -1101,7 +1160,7 @@ Garages = {
         label = "The Motor Hotel Parking",
         showBlip = true,
         blipcoords = vector3(1137.77, 2663.54, 37.9),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -1122,7 +1181,7 @@ Garages = {
         label = "Liquor Parking",
         showBlip = true,
         blipcoords = vector3(934.95, 3606.59, 32.81),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -1167,7 +1226,7 @@ Garages = {
         label = "Bell Farms Parking",
         showBlip = true,
         blipcoords = vector3(78.34, 6418.74, 31.28),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -1190,7 +1249,7 @@ Garages = {
         label = "Legion Square Parking",
         showBlip = true,
         blipcoords = vector3(215.9499, -809.698, 30.731),
-        blipName = "Public Parking",
+        blipName = "公共車庫",
         blipNumber = 357,
         type = 'public',                --public, job, gang, depot
         vehicleCategories = {'car', 'motorcycle', 'other'},
@@ -1632,28 +1691,46 @@ Garages = {
         },
         debug = false
     },
-    ['helipad'] = {
+    ['pdHelicopter1'] = {
         ['Zone'] = {
             ['Shape'] = { --polygon that surrounds the parking area
-                vector2(-757.8896484375, -1469.876953125),
-                vector2(-744.54223632812, -1480.4110107422),
-                vector2(-733.07989501954, -1467.4460449218),
-                vector2(-746.4605102539, -1456.0607910156)
+            vector2(454.7649230957, -986.34869384766),
+            vector2(454.78607177734, -975.62908935547),
+            vector2(443.9114074707, -975.77838134766),
+            vector2(444.07632446289, -986.56121826172)
             },
-            ['minZ'] = 4.0,  -- min height of the parking zone
-            ['maxZ'] = 8.0,  -- max height of the parking zone
+            ['minZ'] = 43.0,  -- min height of the parking zone
+            ['maxZ'] = 44.691513061523,  -- max height of the parking zone
         },
-        label = 'Helipad',
-        type = 'public',
+        label = 'MRPD Helicopter',
+        drawText = '直昇機機庫',
+        type = 'job',
+        job = 'leo',
         vehicleCategories = {'helicopter'},
-        drawText = 'Helipad',
-        showBlip = true,
-        blipName = "Helipad",
-        blipNumber = 64,
-        blipColor = 50,
-        blipcoords = vector3(-745.61, -1468.57, 4.37),
         ["ParkingSpots"] = {
-            vector4(-745.53, -1468.68, 5.0, 321.19)
+            vector4(449.1, -981.22, 43.69, 268.18)
+        },
+        ParkingDistance = 10.0,
+        debug = false
+    },
+    ['pdHelicopter2'] = {
+        ['Zone'] = {
+            ['Shape'] = { --polygon that surrounds the parking area
+            vector2(476.77487182617, -976.87670898438),
+            vector2(476.63827514648, -987.42095947266),
+            vector2(487.21435546875, -987.28399658203),
+            vector2(487.03897094727, -976.72381591797)
+            },
+            ['minZ'] = 40.191513061523,  -- min height of the parking zone
+            ['maxZ'] = 41.691513061523,  -- max height of the parking zone
+        },
+        label = 'MRPD Helicopter',
+        drawText = '直昇機機庫',
+        type = 'job',
+        job = 'leo',
+        vehicleCategories = {'helicopter'},
+        ["ParkingSpots"] = {
+            vector4(481.59, -982.23, 41.01, 270.35)
         },
         ParkingDistance = 10.0,
         debug = false
