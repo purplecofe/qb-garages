@@ -555,43 +555,6 @@ function GetSpawnLocationAndHeading(garage, garageType, parkingSpots, vehicle, s
     return location, heading
 end
 
-local function UpdateVehicleSpawnerSpawnedVehicle(veh, garage, heading, cb)
-    local plate = QBCore.Functions.GetPlate(veh)
-    if FuelScript then
-        exports[FuelScript]:SetFuel(veh, 100)
-    else
-        exports['LegacyFuel']:SetFuel(veh, 100) -- Don't change this. Change it in the  Defaults to legacy fuel if not set in the config
-    end
-    TriggerEvent("vehiclekeys:client:SetOwner", plate)
-    TriggerServerEvent("qb-garage:server:UpdateSpawnedVehicle", plate, true)
-
-    ClearMenu()
-    SetEntityHeading(veh, heading)
-    
-    if garage.WarpPlayerIntoVehicle ~= nil and garage.WarpPlayerIntoVehicle or WarpPlayerIntoVehicle then
-        TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-    end
-    
-    SetAsMissionEntity(veh)
-    SetVehicleEngineOn(veh, true, true)
-
-    if cb then cb(veh) end
-end
-
-local function SpawnVehicleSpawnerVehicle(vehicleModel, location, heading, cb)
-    local garage = Garages[CurrentGarage]
-    if SpawnVehicleServerside then
-        QBCore.Functions.TriggerCallback('QBCore:Server:SpawnVehicle', function(netId)
-            local veh = NetToVeh(netId)
-            UpdateVehicleSpawnerSpawnedVehicle(veh, garage, heading, cb)
-        end,vehicleModel, location, garage.WarpPlayerIntoVehicle ~= nil and garage.WarpPlayerIntoVehicle or WarpPlayerIntoVehicle)
-    else
-        QBCore.Functions.SpawnVehicle(vehicleModel, function(veh)
-            UpdateVehicleSpawnerSpawnedVehicle(veh, garage, heading, cb)
-        end, location, garage.WarpPlayerIntoVehicle ~= nil and garage.WarpPlayerIntoVehicle or WarpPlayerIntoVehicle)
-    end
-end
-
 function UpdateSpawnedVehicle(spawnedVehicle, vehicleInfo, heading, garage, properties, owned)
     QBCore.Functions.SetVehicleProperties(spawnedVehicle, properties)
     local plate = QBCore.Functions.GetPlate(spawnedVehicle)
@@ -615,6 +578,10 @@ function UpdateSpawnedVehicle(spawnedVehicle, vehicleInfo, heading, garage, prop
 end
 
 -- Events
+
+RegisterNetEvent('qb-garages:client:', function(data)
+    
+end)
 
 RegisterNetEvent("qb-garages:client:GarageMenu", function(data)
     local type = data.type

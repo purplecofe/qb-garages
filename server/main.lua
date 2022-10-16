@@ -98,10 +98,13 @@ QBCore.Functions.CreateCallback("qb-garage:server:GetGarageVehicles", function(s
                     if vehicle.depotprice == 0 then
                         vehicle.depotprice = DepotPrice
                     end
-                    
-                    vehicle.canTakeout = os.time() >= vehicle.enddate
-                    vehicle.startdate = os.date("%Y/%m/%d %H:%M:%S", vehicle.startdate)
-                    vehicle.enddate = os.date("%Y/%m/%d %H:%M:%S", vehicle.enddate)
+                    if vehicle.enddate and vehicle.startdate then
+                        vehicle.canTakeout = os.time() >= vehicle.enddate
+                        vehicle.startdate = os.date("%Y/%m/%d %H:%M:%S", vehicle.startdate)
+                        vehicle.enddate = os.date("%Y/%m/%d %H:%M:%S", vehicle.enddate)    
+                    else
+                        vehicle.canTakeout = true
+                    end
                     vehicle.parkingspot = nil
 
                     if vehicle.damage then
@@ -306,7 +309,7 @@ RegisterNetEvent('qb-garage:server:updateVehicleState', function(state, plate, g
     if garageType == 'job' and not owned then
         MySQL.update('UPDATE job_vehicles SET state = ?, garage = ? WHERE plate = ?',{state, garage, plate})
     else
-        MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, depotprice = ? WHERE plate = ?',{state, garage, 0, plate})
+        MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, depotprice = ?, startdate = ?, enddate = ?, reason = ?, worker = ? WHERE plate = ?',{state, garage, 0, nil, nil, nil , nil, plate})
     end
 end)
 
@@ -315,6 +318,10 @@ RegisterNetEvent('qb-garages:server:UpdateOutsideVehicles', function(Vehicles)
     local ply = QBCore.Functions.GetPlayer(src)
     local citizenId = ply.PlayerData.citizenid
     OutsideVehicles[citizenId] = Vehicles
+end)
+
+RegisterNetEvent('qb-garages:server:removeOutsideVehicles', function(plate)
+	OutsideVehicles[plate] = nil
 end)
 
 AddEventHandler('onResourceStart', function(resource)
