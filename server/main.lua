@@ -273,6 +273,15 @@ QBCore.Functions.CreateCallback("qb-garage:server:checkOwnership", function(sour
     end
 end)
 
+QBCore.Functions.CreateCallback("qb-garage:server:VehicleTracker", function(source, cb, plate)
+    if OutsideVehicles[plate] and DoesEntityExist(OutsideVehicles[plate].entity) then
+        local coords = GetEntityCoords(OutsideVehicles[plate].entity)
+        cb(coords)
+    else
+        TriggerClientEvent('QBCore:Notify', source, "This vehicle doesn't exist anymore, Get your vehicle in impound", 'error')
+    end
+end)
+
 RegisterNetEvent('qb-garage:server:updateVehicle', function(state, fuel, engine, body, plate, properties, garage, location, damage, garageType, owned)
     if location and type(location) == 'vector3' then
         if StoreDamageAccuratly then

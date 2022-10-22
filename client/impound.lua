@@ -5,7 +5,7 @@ local PlayerJob = {}
 
 CreateThread(function()
     Targets["impoundFrontDesk"] =
-        exports['qb-target']:AddBoxZone("impoundFrontDesk", vector3(-192.58, -1161.92, 23.67), 0.5, 1, {name = "impoundFrontDesk", heading = 270, debugPoly = true, minZ = 21.47, maxZ = 23.67},
+        exports['qb-target']:AddBoxZone("impoundFrontDesk", vector3(-192.58, -1161.92, 23.67), 0.5, 1, {name = "impoundFrontDesk", heading = 270, debugPoly = false, minZ = 21.47, maxZ = 23.67},
             {options = {{event = "qb-garages:client:ImpoundFrontDeskMenu", label = "櫃台"}, }, distance = 2.5, })
 end)
 
@@ -28,9 +28,9 @@ RegisterNetEvent('qb-garages:client:ImpoundFrontDeskMenu', function()
         Menu[#Menu + 1] = {header = "以車牌搜尋", txt = "用車牌搜尋", params = {event = 'qb-garages:client:BrowseByPlate'}}
         Menu[#Menu + 1] = {header = "以車主搜尋", txt = "用 State ID 搜尋", params = {event = 'qb-garages:client:BrowseByOwner'}}
     else
-        Menu[#Menu + 1] = {header = "個人車輛", txt = "顯示你目前被扣押的車輛", params = {event = ''}}
+        Menu[#Menu + 1] = {header = "個人車輛", txt = "顯示你目前被扣押的車輛", params = {event = 'qb-garages:client:PersonalVehicles'}}
     end
-    exports['qb-menu']:openMenu(Menu)
+    exports['ps-ui']:openMenu(Menu)
 end)
 
 RegisterNetEvent('qb-garages:client:RecentlyImpounded', function()
@@ -52,7 +52,7 @@ RegisterNetEvent('qb-garages:client:RecentlyImpounded', function()
         else
             Menu[#Menu + 1] = {header = "尚無扣押車輛", txt = ""}
         end
-        exports['qb-menu']:openMenu(Menu)
+        exports['ps-ui']:openMenu(Menu)
     end)
 end)
 
@@ -75,7 +75,7 @@ RegisterNetEvent('qb-garages:client:PersonalVehicles', function()
         else
             Menu[#Menu + 1] = {header = "尚無扣押車輛", txt = ""}
         end
-        exports['qb-menu']:openMenu(Menu)
+        exports['ps-ui']:openMenu(Menu)
     end)
 end)
 
@@ -87,7 +87,7 @@ RegisterNetEvent('qb-garages:client:PersonalVehicleDetail', function(data)
     Menu[#Menu + 1] = {header = "留置資訊", isMenuHeader = true, txt = "記點: " .. data.vehicle.reason .. " | " .. "留置至: " .. data.vehicle.endDate, params = {event = ""}}
     Menu[#Menu + 1] = {header = "留置費", isMenuHeader = true, txt = "總金額: " .. data.vehicle.price, params = {event = ""}}
     -- Menu[#Menu + 1] = {header = "取回扣押車輛", txt = "", params = {event = ""}}
-    exports['qb-menu']:openMenu(Menu)
+    exports['ps-ui']:openMenu(Menu)
 end)
 
 RegisterNetEvent('qb-garages:client:BrowseByPlate', function()
@@ -117,7 +117,7 @@ RegisterNetEvent('qb-garages:client:BrowseByPlate', function()
         else
             Menu[#Menu + 1] = {header = "尚無扣押車輛", txt = ""}
         end
-        exports['qb-menu']:openMenu(Menu)
+        exports['ps-ui']:openMenu(Menu)
     end, input.plate)
 end)
 
@@ -148,7 +148,7 @@ RegisterNetEvent('qb-garages:client:BrowseByOwner', function()
         else
             Menu[#Menu + 1] = {header = "尚無扣押車輛", txt = ""}
         end
-        exports['qb-menu']:openMenu(Menu)
+        exports['ps-ui']:openMenu(Menu)
     end, input.cid)
 end)
 

@@ -79,7 +79,7 @@ local function PublicGarage(garageName, type)
     local categories = garage.vehicleCategories
     local superCategory = GetSuperCategoryFromCategories(categories)
 
-    exports['qb-menu']:openMenu({
+    exports['ps-ui']:openMenu({
         {
             header = garage.label,
             isMenuHeader = true,
@@ -111,7 +111,7 @@ end
 
 local function MenuHouseGarage()
     local superCategory = GetSuperCategoryFromCategories(HouseGarageCategories)
-    exports['qb-menu']:openMenu({
+    exports['ps-ui']:openMenu({
         {
             header = Lang:t("menu.header.house_garage"),
             isMenuHeader = true
@@ -473,7 +473,7 @@ function JobMenuGarage(CurrentGarage, type)
             }
         },
     }
-    exports['qb-menu']:openMenu(menu)
+    exports['ps-ui']:openMenu(menu)
 end
 
 function GetFreeParkingSpots(parkingSpots)
@@ -664,7 +664,7 @@ RegisterNetEvent("qb-garages:client:GarageMenu", function(data)
                     event = "qb-menu:closeMenu",
                 }
             }
-            exports['qb-menu']:openMenu(MenuGarageOptions)
+            exports['ps-ui']:openMenu(MenuGarageOptions)
         end
     end, garageId, type, superCategory)
 end)
@@ -718,7 +718,7 @@ RegisterNetEvent('qb-garages:client:JobMenuGarage', function(data)
         else
             vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.empty'), txt = "", params = { event = "" }}
         end
-        exports['qb-menu']:openMenu(vehicleMenu)
+        exports['ps-ui']:openMenu(vehicleMenu)
     end, data.garageId, superCategory)
 end)
 -- 車輛列表
@@ -752,7 +752,7 @@ RegisterNetEvent('qb-garages:client:JobMenuVehicles', function(data)
         else
             vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.empty'), txt = "", params = { event = "" }}
         end
-        exports['qb-menu']:openMenu(vehicleMenu)
+        exports['ps-ui']:openMenu(vehicleMenu)
     end, data.vehicleModel, data.garageId)
 end)
 -- 選中的車輛列表
@@ -790,7 +790,7 @@ RegisterNetEvent('qb-garages:client:JobMenuVehicle', function(data)
             vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.status_car'), txt = Lang:t('menu.text.status_car', {state = state, engine = enginePercent, body = bodyPercent}), params = { event = "" }}
             vehicleMenu[#vehicleMenu+1] = {header = Lang:t('menu.header.retrieve_car'), txt = "", disabled = vehicle.state ~= 2, params = { event = "qb-garages:client:RetrieveVehicle", args = {plate = vehicle.plate} }}
         end
-        exports['qb-menu']:openMenu(vehicleMenu)
+        exports['ps-ui']:openMenu(vehicleMenu)
     end, data.vehicle.plate)
 end)
 
